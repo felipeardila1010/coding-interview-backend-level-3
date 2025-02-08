@@ -5,9 +5,12 @@ process.on('unhandledRejection', (err) => {
   process.exit(1);
 });
 
-_startServer();
+_startServer().catch((err) => {
+  console.log(err);
+  process.exit(1);
+});
 
-function _startServer() {
+async function _startServer() {
   initializeServer();
   startServer();
 }

@@ -1,10 +1,28 @@
-import Hapi from "@hapi/hapi";
-import { defineRoutes } from "./routes";
+import Hapi from '@hapi/hapi';
+import Pino from 'hapi-pino';
+import { defineRoutes } from './routes/routes';
 
-const getServer = () => {
+const pinoOptionsDev = {
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true
+    }
+  }
+};
+
+const getServer = async () => {
   const server = Hapi.server({
-    host: "localhost",
+    host: 'localhost',
     port: 3000,
+    debug: false
+  });
+  await server.register({
+    plugin: Pino,
+    options: {
+      level: 'debug',
+      ...pinoOptionsDev
+    }
   });
 
   defineRoutes(server);
@@ -13,14 +31,14 @@ const getServer = () => {
 };
 
 export const initializeServer = async () => {
-  const server = getServer();
+  const server = await getServer();
   await server.initialize();
   return server;
 };
 
 export const startServer = async () => {
-  const server = getServer();
+  const server = await getServer();
+  server.log(`Server running on ${server.info.uri}`);
   await server.start();
-  console.log(`Server running on ${server.info.uri}`);
   return server;
 };
