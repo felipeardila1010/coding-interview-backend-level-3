@@ -33,6 +33,7 @@ const getServer = async () => {
 export const initializeServer = async () => {
   const server = await getServer();
   await server.initialize();
+
   return server;
 };
 
@@ -40,5 +41,6 @@ export const startServer = async () => {
   const server = await getServer();
   server.log(`Server running on ${server.info.uri}`);
   await server.start();
+
   return server;
 };

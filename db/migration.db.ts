@@ -1,0 +1,6 @@
+export const ITEM_TABLE = `
+CREATE TABLE IF NOT EXISTS item (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    price REAL
+)`
