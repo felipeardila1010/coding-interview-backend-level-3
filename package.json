@@ -8,7 +8,7 @@
         "start": "node dist/index.js",
         "dev": "nodemon --watch src --exec ts-node src/index.ts",
         "test": "npm run test:unit && npm run test:e2e",
-        "test:unit": "jest unit",
+        "test:unit": "jest",
         "test:e2e": "jest e2e"
     },
     "author": "El Dorado Dev Team",
