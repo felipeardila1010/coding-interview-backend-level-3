@@ -3,6 +3,7 @@ import { injectable } from 'inversify'
 import { ITEM_TABLE } from '../../../db/migration.db'
 import {
     DeleteRequestSchemaType,
+    GetPartialRequestSchemaType,
     ItemSchemaType,
     PostRequestSchemaType,
     PutRequestSchemaType,
@@ -22,7 +23,24 @@ export class ItemRepository {
             })
         })
     }
-    async post(payload: PostRequestSchemaType): Promise<number> {
+    async getById(
+        payload: GetPartialRequestSchemaType
+    ): Promise<ItemSchemaType> {
+        return new Promise((resolve, reject) => {
+            db.get(
+                'SELECT * FROM item WHERE id = ?',
+                [payload.id],
+                (err, row) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(row as ItemSchemaType)
+                    }
+                }
+            )
+        })
+    }
+    async post(payload: PostRequestSchemaType): Promise<ItemSchemaType> {
         return new Promise((resolve, reject) => {
             db.run(
                 `INSERT INTO item (name, price) VALUES (?, ?)`,
@@ -31,13 +49,17 @@ export class ItemRepository {
                     if (err) {
                         reject(err)
                     } else {
-                        resolve(this.lastID)
+                        resolve({
+                            id: this.lastID,
+                            name: payload.name,
+                            price: payload.price,
+                        })
                     }
                 }
             )
         })
     }
-    async put(payload: PutRequestSchemaType): Promise<number> {
+    async put(payload: PutRequestSchemaType): Promise<ItemSchemaType> {
         return new Promise((resolve, reject) => {
             db.run(
                 `UPDATE item SET name = ?, price = ? WHERE id = ?`,
@@ -46,7 +68,11 @@ export class ItemRepository {
                     if (err) {
                         reject(err)
                     } else {
-                        resolve(this.changes)
+                        resolve({
+                            id: payload.id,
+                            name: payload.name,
+                            price: payload.price,
+                        })
                     }
                 }
             )
@@ -61,7 +87,7 @@ export class ItemRepository {
                     if (err) {
                         reject(err)
                     } else {
-                        resolve(this.changes)
+                        resolve(payload.id)
                     }
                 }
             )

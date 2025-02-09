@@ -4,6 +4,7 @@ import { types } from '../dependency-injection/types'
 import { LoggerInterface } from '../domain/interfaces'
 import {
     DeleteRequestSchemaType,
+    GetPartialRequestSchemaType,
     ItemSchemaType,
     PostRequestSchemaType,
     PutRequestSchemaType,
@@ -22,17 +23,24 @@ export class ItemService {
         return await this.itemRepository.get()
     }
 
+    async getById(
+        logger: LoggerInterface,
+        payload: GetPartialRequestSchemaType
+    ): Promise<ItemSchemaType> {
+        return await this.itemRepository.getById(payload)
+    }
+
     async post(
         logger: LoggerInterface,
         payload: PostRequestSchemaType
-    ): Promise<number> {
+    ): Promise<ItemSchemaType> {
         return await this.itemRepository.post(payload)
     }
 
     async put(
         logger: LoggerInterface,
         payload: PutRequestSchemaType
-    ): Promise<number> {
+    ): Promise<ItemSchemaType> {
         return await this.itemRepository.put(payload)
     }
 
